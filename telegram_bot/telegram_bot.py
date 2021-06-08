@@ -95,8 +95,6 @@ def send_next_question(update, context):
         quiz_question.question = questions[index].get("question")
         quiz_question.answers = questions[index].get("options")
         quiz_question.explanation = questions[index].get("explanation")
-        quiz_question.correct_answer_position = 2
-        quiz_question.correct_answer = "wine"
 
         add_quiz_question(update, context, quiz_question)
     else:
@@ -218,22 +216,6 @@ def get_answer(update):
     for answer in answers:
         if answer.voter_count == 1:
             ret = answer.text
-
-    return ret
-
-
-# determine if user answer is correct
-def is_answer_correct(update):
-    answers = update.poll.options
-
-    ret = False
-    counter = 0
-
-    for answer in answers:
-        if answer.voter_count == 1 and update.poll.correct_option_id == counter:
-            ret = True
-            break
-        counter = counter + 1
 
     return ret
 
