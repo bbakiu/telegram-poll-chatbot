@@ -192,18 +192,6 @@ def add_quiz_question(update, context, quiz_question):
     context.bot_data.update({message.poll.id: message.chat.id})
 
 
-def add_poll_question(update, context, quiz_question):
-    message = context.bot.send_poll(
-        chat_id=get_chat_id(update, context),
-        question=quiz_question.question,
-        options=quiz_question.answers,
-        type=Poll.REGULAR,
-        explanation=quiz_question.explanation,
-        allows_multiple_answers=True,
-        is_anonymous=True,
-    )
-
-
 def get_text_from_message(update):
     return update.message.text
 
@@ -247,9 +235,6 @@ def main():
     dp.add_handler(
         CallbackQueryHandler(main_handler, pass_chat_data=True, pass_user_data=True)
     )
-
-    # # poll answer handler
-    # dp.add_handler(PollAnswerHandler(poll_answer_handler, pass_chat_data=True, pass_user_data=True))
 
     # quiz answer handler
     dp.add_handler(PollHandler(poll_handler, pass_chat_data=True, pass_user_data=True))
