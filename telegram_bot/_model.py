@@ -30,10 +30,11 @@ class MultiItems:
 
 
 class QuizQuestion:
-    def __init__(self, question="", answers=[], correct_answer=""):
+    def __init__(self, question="", answers=[], correct_answer="", explanation=""):
         self.question = question
         self.answers = answers
         self.correct_answer = correct_answer
+        self.explanation = explanation
         self.correct_answer_position = self.__get_correct_answer_position__()
 
     def __get_correct_answer_position__(self):
@@ -49,4 +50,16 @@ class QuizQuestion:
         return ret
 
     def __str__(self):
-        return f"question:{self.question} answers:{self.answers} correct_answer:{self.correct_answer} correct_answer_position:{self.correct_answer_position} "
+        return f"question:{self.question} answers:{self.answers} explanation:{self.answers} correct_answer:{self.correct_answer} correct_answer_position:{self.correct_answer_position} "
+
+
+class Answer:
+    def __init__(self, question="", answer=""):
+        self.question = question
+        self.answer = answer
+
+    def __str__(self):
+        return f"question:{self.question} answer:{self.answer}"
+
+    def as_dict(self):
+        return {'question': self.question, 'answer': self.answer}

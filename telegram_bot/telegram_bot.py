@@ -1,9 +1,9 @@
-import time
-import pyfiglet
 import logging
 import logging.config
 import os
+import time
 
+import pyfiglet
 from dotenv import load_dotenv, find_dotenv
 
 load_dotenv(find_dotenv())
@@ -20,6 +20,28 @@ from telegram.ext import (
 import telegram
 
 from _model import *
+
+questions = [
+    {
+        'question': 'What is your favorite drink?',
+        'options': ['wine', 'water', 'soda'],
+        'explanation': 'It depends on what you eat'
+    },
+    {
+        'question': 'What is your favorite food?',
+        'options': ['wine', 'water', 'soda'],
+        'explanation': 'It depends on what you feel'
+    },
+    {
+        'question': 'What is your favorite appetizer?',
+        'options': ['wine', 'water', 'soda'],
+        'explanation': 'It depends on how you want to start'
+    }
+]
+
+user_answers = []
+
+index = 0
 
 
 def get_chat_id(update, context):
@@ -59,20 +81,42 @@ def get_user(update):
 
 def start_command_handler(update, context):
     """Send a message when the command /start is issued."""
+    update.message.reply_text("Welcome to Chatbot quiz Bot.")
     add_typing(update, context)
+    send_next_question(update, context)
 
-    quiz_question = QuizQuestion()
-    quiz_question.question = "What tastes better?"
-    quiz_question.answers = ["water", "ice", "wine"]
-    quiz_question.correct_answer_position = 2
-    quiz_question.correct_answer = "wine"
 
-    add_quiz_question(update, context, quiz_question)
+def send_next_question(update, context):
+    global index
+
+    if index < len(questions):
+        # for question in questions:
+        quiz_question = QuizQuestion()
+        quiz_question.question = questions[index].get("question")
+        quiz_question.answers = questions[index].get("options")
+        quiz_question.explanation = questions[index].get("explanation")
+        quiz_question.correct_answer_position = 2
+        quiz_question.correct_answer = "wine"
+
+        add_quiz_question(update, context, quiz_question)
+    else:
+        # reply
+        add_typing(update, context)
+        add_text_message(update, context, "This was the last question. Thank you for your participation! 🎉")
 
 
 def help_command_handler(update, context):
     """Send a message when the command /help is issued."""
-    update.message.reply_text("Type /start")
+    update.message.reply_text("This is the Quiz Chat Bot. Type /start to start!")
+
+
+def hi_command_handler(update, context):
+    """Send a message when the command /hi is issued."""
+    update.message.reply_text("This is the  Quiz Chat Bot Bot. Type /start to start!")
+
+
+def start(update, context):
+    context.bot.send_message(chat_id=get_chat_id(update, context), text="I'm a bot, please talk to me!")
 
 
 def main_handler(update, context):
@@ -88,17 +132,21 @@ def main_handler(update, context):
 
 
 def poll_handler(update, context):
-    logging.info(f"question : {update.poll.question}")
-    logging.info(f"correct option : {update.poll.correct_option_id}")
-    logging.info(f"option #1 : {update.poll.options[0]}")
-    logging.info(f"option #2 : {update.poll.options[1]}")
-    logging.info(f"option #3 : {update.poll.options[2]}")
+    global index
+    global user_answers
 
-    user_answer = get_answer(update)
-    logging.info(f"correct option {is_answer_correct(update)}")
+    user_answer = Answer()
+    user_answer.question = update.poll.question
+    user_answer.answer = get_answer(update)
 
     add_typing(update, context)
-    add_text_message(update, context, f"Correct answer is {user_answer}")
+    add_text_message(update, context, f"Your answer was {user_answer.answer}")
+    add_text_message(update, context, f"Full answer was {user_answer}")
+    user_answers.append(user_answer.as_dict())
+
+    index = index + 1
+
+    send_next_question(update, context)
 
 
 def add_typing(update, context):
@@ -129,16 +177,16 @@ def add_suggested_actions(update, context, response):
     )
 
 
+# question date type: question, options, open period, explanation,
 def add_quiz_question(update, context, quiz_question):
     message = context.bot.send_poll(
         chat_id=get_chat_id(update, context),
         question=quiz_question.question,
         options=quiz_question.answers,
-        type=Poll.QUIZ,
-        correct_option_id=quiz_question.correct_answer_position,
-        open_period=5,
+        type=Poll.REGULAR,
+        open_period=40,
         is_anonymous=True,
-        explanation="Well, honestly that depends on what you eat",
+        explanation=quiz_question.explanation,
         explanation_parse_mode=telegram.ParseMode.MARKDOWN_V2,
     )
 
@@ -152,8 +200,9 @@ def add_poll_question(update, context, quiz_question):
         question=quiz_question.question,
         options=quiz_question.answers,
         type=Poll.REGULAR,
+        explanation=quiz_question.explanation,
         allows_multiple_answers=True,
-        is_anonymous=False,
+        is_anonymous=True,
     )
 
 
@@ -206,6 +255,7 @@ def main():
 
     # command handlers
     dp.add_handler(CommandHandler("help", help_command_handler))
+    dp.add_handler(CommandHandler("hi", help_command_handler))
     dp.add_handler(CommandHandler("start", start_command_handler))
 
     # message handler
@@ -215,6 +265,9 @@ def main():
     dp.add_handler(
         CallbackQueryHandler(main_handler, pass_chat_data=True, pass_user_data=True)
     )
+
+    # # poll answer handler
+    # dp.add_handler(PollAnswerHandler(poll_answer_handler, pass_chat_data=True, pass_user_data=True))
 
     # quiz answer handler
     dp.add_handler(PollHandler(poll_handler, pass_chat_data=True, pass_user_data=True))
@@ -257,7 +310,7 @@ class DefaultConfig:
 
 
 if __name__ == "__main__":
-    ascii_banner = pyfiglet.figlet_format("SampleTelegramQuiz")
+    ascii_banner = pyfiglet.figlet_format("ChatBotQuiz")
     print(ascii_banner)
 
     # Enable logging
