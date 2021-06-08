@@ -22,7 +22,7 @@ on:
 # Environment variables available to all jobs and steps in this workflow
 env:
   PROJECT_ID: ${{ secrets.PROJECT_ID }}
-  RUN_REGION: eu-central1
+  RUN_REGION: europe-west1
   SERVICE_NAME: telegram-poll-chat-bot
 
 jobs:
