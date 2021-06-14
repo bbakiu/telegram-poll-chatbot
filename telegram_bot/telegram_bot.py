@@ -3,7 +3,6 @@ import logging.config
 import os
 import time
 
-import pyfiglet
 from dotenv import load_dotenv, find_dotenv
 
 load_dotenv(find_dotenv())
@@ -277,9 +276,6 @@ class DefaultConfig:
 
 
 if __name__ == "__main__":
-    ascii_banner = pyfiglet.figlet_format("ChatBotQuiz")
-    print(ascii_banner)
-
     # Enable logging
     DefaultConfig.init_logging()
 
