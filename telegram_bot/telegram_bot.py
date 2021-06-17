@@ -251,7 +251,7 @@ def main():
         )
         updater.bot.setWebhook(DefaultConfig.WEBHOOK_URL + DefaultConfig.TELEGRAM_TOKEN)
 
-        logging.info(f"Start webhook mode on port {DefaultConfig.PORT}")
+        logging.info(f"Start webhook mode on port {DefaultConfig.PORT}, webhook {DefaultConfig.WEBHOOK_URL}")
     else:
         updater.start_polling()
         logging.info(f"Start polling mode")
@@ -260,10 +260,10 @@ def main():
 
 
 class DefaultConfig:
-    PORT = int(os.environ.get("PORT", 3978))
-    TELEGRAM_TOKEN = os.environ.get("TELEGRAM_TOKEN", "")
-    MODE = os.environ.get("MODE", "polling")
-    WEBHOOK_URL = os.environ.get("WEBHOOK_URL", "")
+    PORT = int(os.environ.get("PORT", 5000))
+    TELEGRAM_TOKEN = os.environ.get("TELEGRAM_TOKEN", "1858579947:AAHMNzb0kBQ0FMHGxPOhkvfsfJ2yvUxov5w")
+    MODE = os.environ.get("MODE", "webhook")
+    WEBHOOK_URL = os.environ.get("WEBHOOK_URL", "https://telegram-chat-bot-bujar-ppyoll.herokuapp.com/")
 
     LOG_LEVEL = os.environ.get("LOG_LEVEL", "INFO").upper()
 
