@@ -113,6 +113,8 @@ def hi_command_handler(update, context):
 
 
 def start(update, context):
+    global index
+    index = 0
     context.bot.send_message(chat_id=get_chat_id(update, context), text="I'm a bot, please talk to me!")
 
 
