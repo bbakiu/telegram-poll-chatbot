@@ -260,10 +260,10 @@ def main():
 
 
 class DefaultConfig:
-    PORT = int(os.environ.get("PORT", 5000))
+    PORT = int(os.environ.get("PORT", 8443))
     TELEGRAM_TOKEN = os.environ.get("TELEGRAM_TOKEN", "1858579947:AAHMNzb0kBQ0FMHGxPOhkvfsfJ2yvUxov5w")
     MODE = os.environ.get("MODE", "webhook")
-    WEBHOOK_URL = os.environ.get("WEBHOOK_URL", "https://telegram-chat-bot-bujar-ppyoll.herokuapp.com/")
+    WEBHOOK_URL = os.environ.get("WEBHOOK_URL", "https://telegram-chat-bot-bujar-poll.herokuapp.com/")
 
     LOG_LEVEL = os.environ.get("LOG_LEVEL", "INFO").upper()
 
