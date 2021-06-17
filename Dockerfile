@@ -5,5 +5,5 @@ COPY . /src
 # 3. Install dependencies
 RUN pip install -r /src/requirements.txt
 
-WORKDIR /src/telegram_bot
+WORKDIR /src
 CMD [ "python", "telegram_bot.py" ]
